@@ -1,0 +1,37 @@
+[
+    {
+        "nombre": "Buzz Lightyear",
+        "precio": 550,
+        "stock": 20
+    },
+    {
+        "nombre": "Woody",
+        "precio": 1000.0,
+        "stock": 40
+    },
+    {
+        "nombre": "Rex",
+        "precio": 600.0,
+        "stock": 24
+    },
+    {
+        "nombre": "Eduardo",
+        "precio": 200.0,
+        "stock": 2
+    },
+    {
+        "nombre": "Marco",
+        "precio": 300.0,
+        "stock": 21
+    },
+    {
+        "nombre": "Karla",
+        "precio": 400.0,
+        "stock": 2
+    },
+    {
+        "nombre": "Maxiliano",
+        "precio": 233.0,
+        "stock": 43
+    }
+]
