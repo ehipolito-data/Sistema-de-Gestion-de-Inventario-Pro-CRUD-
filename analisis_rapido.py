@@ -1,34 +1,77 @@
 import pandas as pd
+import matplotlib.pyplot as plt
 
 df = pd.read_json('inventario.json')
 
-print("--- TU INVENTARIO COMO DATAFRAME ---")
-print(df)
+def analisis_inventario(df):
+    print("--- TU INVENTARIO COMO DATAFRAME ---")
+    print(df)
+    print("\n--- RESUMEN ESTADISTICO ---")
+    print(df.describe())
+    df['valor_total_stock'] = df['precio'] * df['stock']
+    print("\n--- INVENTARIO VALORIZADO ---")
+    print(df[['nombre', 'precio', 'stock', 'valor_total_stock']])
 
-print("\n--- RESUMEN ESTADISTICO ---")
-print(df.describe())
+def bajos_stock(df):
+    stock_bajo = df[df['stock'] < 5] 
+    return stock_bajo
 
-df['valor_total_stock'] = df['precio'] * df['stock']
+def reabestecimiento_mostrar(df):
+    stock_bajo = bajos_stock(df)
+    print("\n---ALERTA DE REABASTECIMIENTO (Stock < 5)---")
+    if not stock_bajo.empty:
+        print(stock_bajo[['nombre', 'stock']])
+    else:
+        "Todo en orden, no hay stock bajo"
 
-print("\n--- INVENTARIO VALORIZADO ---")
-print(df[['nombre', 'precio', 'stock', 'valor_total_stock']])
+def exportar_excel(df):
+    stock_bajo = bajos_stock(df)
+    #Guardamos solo los productos que necesitan reabastecerse
+    stock_bajo.to_excel('Alerta_Reabastecimiento.xlsx', index=False)
+    print("\n ¡Archivo 'Alerta_Reabestecimiento.xlsx' generado con éxito!")
 
-#stock_bajo = df['stock'] < 5
+def simular_inflacion(df, porcentaje=10):
+    print(f"\n---Simulación: Incremento por inflación ({porcentaje}%) ---")
+    df_sim = df.copy()
+    df_sim['precio_inflado'] = df_sim['precio'] * (1 + (porcentaje / 100))
+    df_sim['valor_proyectado'] = df_sim['precio_inflado'] * df_sim['stock']
 
-#print(stock_bajo)
-print('\n Elementos con menos de 5 de stock')
+    total_actual = (df['precio'] * df['stock']).sum()
+    total_proyectado = df_sim['valor_proyectado'].sum()
 
-stock_bajo = df[df['stock'] < 5] 
+    print(f"Valor actual: ${total_actual:,.2f}")
+    print(f"Valor proyectado: ${total_proyectado:,.2f}")
+    print(f"Incremento patrimonial: ${total_proyectado - total_actual:,.2f}")
+    return df_sim
 
-print(stock_bajo)
+def clasificar_inventario(df):
+    print("\n --- SEGMENTACIÓN DE INVENTARIO ---")
+    def nivel_stock(cantidad):
+        if cantidad < 5: return 'CRÍTICO'
+        if cantidad <= 20: return 'NORMAL'
+        return 'EXCEDENTE'
 
-print("\n---ALERTA DE REABASTECIMIENTO (Stock < 5)---")
-if not stock_bajo.empty:
-    print(stock_bajo[['nombre', 'stock']])
-else:
-    "Todo en orden, no hay stock bajo"
+    df['estado'] = df['stock'].apply(nivel_stock)
+    print(df[['nombre', 'stock', 'estado']])
 
-#Guardamos solo los productos que necesitan reabastecerse
+def graficar_stock(df):
+    print("\n ---GENERANDO GRÁFICA DE STOCK---")
+    df.plot(kind='bar', x='nombre', y='stock', color='skyblue', edgecolor='black')
 
-stock_bajo.to_excel('Alerta_Reabastecimiento.xlsx', index=False)
-print("\n ¡Archivo 'Alerta_Reabestecimiento.xlsx' generado con éxito!")
+    # Algunas personalizaciones del diseño
+    plt.title('Niveles de Inventario por Producto', fontsize=14)
+    plt.xlabel('Productos', fontsize=12)
+    plt.ylabel('Unidades en Stock', fontsize=12)
+    plt.xticks(rotation=45) #Rotamos los nombre para que se lean bien
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.tight_layout() #Ajusta los margenes automaticamente
+
+    #En lugar de mostrarla (que a veces falla en servidores), la guardamos
+
+    plt.savefig('reporte_stock.png')
+    print("¡Gráfica guardada exitosamente como 'reporte_stock.png'!")
+
+
+simular_inflacion(df)
+clasificar_inventario(df)
+graficar_stock(df)
