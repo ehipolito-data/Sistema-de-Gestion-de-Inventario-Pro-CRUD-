@@ -24,6 +24,23 @@ def negativo_stock(df):
     stock_negativo = df[df['stock'] < 0]
     return stock_negativo
 
+def normalizar_datos(df):
+    print('Limpieza y normalización de datos')
+
+    #Quitamos espacios en blanco al inicio y al final
+    df['nombre'] = df['nombre'].str.strip()
+
+    #Ponemos todo en mayúscula para que no haya duplicados por letras
+    df['nombre'] = df['nombre'].str.upper()
+
+    #Verficamos si hay duplicados despúes de limpiar
+    duplicados = df.duplicated(subset=['nombre']).sum()
+    if duplicados > 0:
+        print(f"¡Atención! Se encontraron {duplicados} nombres duplicados.")
+        df = df.groupby('nombre').agg({'precio': 'mean', 'stock': 'sum'}).reset_index()
+        print("Duplicados fusionados automáticamente. ")
+    return df
+
 def validar_datos(df):
     
     total_inicial = len(df)
@@ -116,22 +133,7 @@ def graficar_stock(df):
     plt.savefig('reporte_stock.png')
     print("¡Gráfica guardada exitosamente como 'reporte_stock_colores.png'!")
 
-def normalizar_datos(df):
-    print('Limpieza y normalización de datos')
 
-    #Quitamos espacios en blanco al inicio y al final
-    df['nombre'] = df['nombre'].str.strip()
-
-    #Ponemos todo en mayúscula para que no haya duplicados por letras
-    df['nombre'] = df['nombre'].str.upper()
-
-    #Verficamos si hay duplicados despúes de limpiar
-    duplicados = df.duplicated(subset=['nombre']).sum()
-    if duplicados > 0:
-        print(f"¡Atención! Se encontraron {duplicados} nombres duplicados.")
-        df = df.groupby('nombre').agg({'precio': 'mean', 'stock': 'sum'}).reset_index()
-        print("Duplicados fusionados automáticamente. ")
-    return df
 
 df = validar_datos(df)
 
