@@ -1,0 +1,16 @@
+# Python - Archivos temporales de ejecución
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Entornos virtuales (si llegas a crear uno)
+venv/
+.venv/
+env/
+
+# Archivos generados por el sistema / Reportes
+*.xlsx
+*.csv
+
+# Archivos de configuración de VS Code (opcional)
+.vscode/

@@ -31,7 +31,22 @@
     },
     {
         "nombre": "Maxiliano",
-        "precio": 233.0,
+        "precio": 200.0,
         "stock": 43
+    },
+    {
+        "nombre": "MaxilianO",
+        "precio": 400.0,
+        "stock": 43
+    },
+    {
+        "nombre": "Pedro",
+        "precio": 400.0,
+        "stock": -43
+    },
+    {
+        "nombre": "María",
+        "precio": -400.0,
+        "stock": 12
     }
 ]

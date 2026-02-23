@@ -16,6 +16,42 @@ def bajos_stock(df):
     stock_bajo = df[df['stock'] < 5] 
     return stock_bajo
 
+def negativo_precio (df):
+    precio_negativo = df[df['precio'] <= 0]
+    return precio_negativo
+
+def negativo_stock(df):
+    stock_negativo = df[df['stock'] < 0]
+    return stock_negativo
+
+def validar_datos(df):
+    
+    total_inicial = len(df)
+
+    precios_negativos = negativo_precio(df)
+    stocks_negativos = negativo_stock(df)
+
+    df = df[df['precio'] > 0]   
+    df = df[df['stock'] >= 0]
+
+    if not precios_negativos.empty:
+        print("Se encontraron productos con precio negativo")
+        print(precios_negativos)
+    if not stocks_negativos.empty:
+        print("Se encontraron productos con stock negativo")
+        print(stocks_negativos)
+
+    total_final = len(df)
+    eliminados = total_inicial - total_final
+
+    if eliminados > 0:
+        print(f"Se han eliminado {eliminados} registros con datos invalidos.")
+    else:
+        print("Todos los datos son válidos.")
+
+    return df
+
+
 def reabestecimiento_mostrar(df):
     stock_bajo = bajos_stock(df)
     print("\n---ALERTA DE REABASTECIMIENTO (Stock < 5)---")
@@ -56,7 +92,16 @@ def clasificar_inventario(df):
 
 def graficar_stock(df):
     print("\n ---GENERANDO GRÁFICA DE STOCK---")
-    df.plot(kind='bar', x='nombre', y='stock', color='skyblue', edgecolor='black')
+    
+    #Definimos los colores basados en el stock
+    colores = []
+    for s in df['stock']:
+        if s < 5: colores.append('red') #Crítico
+        elif s <= 20: colores.append('orange') #Normal
+        else: colores.append('green')
+
+    plt.figure(figsize=(10, 6))
+    plt.bar(df['nombre'], df['stock'], color=colores, edgecolor='black')
 
     # Algunas personalizaciones del diseño
     plt.title('Niveles de Inventario por Producto', fontsize=14)
@@ -69,9 +114,25 @@ def graficar_stock(df):
     #En lugar de mostrarla (que a veces falla en servidores), la guardamos
 
     plt.savefig('reporte_stock.png')
-    print("¡Gráfica guardada exitosamente como 'reporte_stock.png'!")
+    print("¡Gráfica guardada exitosamente como 'reporte_stock_colores.png'!")
 
+def normalizar_datos(df):
+    print('Limpieza y normalización de datos')
 
-simular_inflacion(df)
-clasificar_inventario(df)
-graficar_stock(df)
+    #Quitamos espacios en blanco al inicio y al final
+    df['nombre'] = df['nombre'].str.strip()
+
+    #Ponemos todo en mayúscula para que no haya duplicados por letras
+    df['nombre'] = df['nombre'].str.upper()
+
+    #Verficamos si hay duplicados despúes de limpiar
+    duplicados = df.duplicated(subset=['nombre']).sum()
+    if duplicados > 0:
+        print(f"¡Atención! Se encontraron {duplicados} nombres duplicados.")
+        df = df.groupby('nombre').agg({'precio': 'mean', 'stock': 'sum'}).reset_index()
+        print("Duplicados fusionados automáticamente. ")
+    return df
+
+df = validar_datos(df)
+
+print(df)
