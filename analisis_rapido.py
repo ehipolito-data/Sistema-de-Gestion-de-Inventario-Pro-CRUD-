@@ -130,11 +130,25 @@ def graficar_stock(df):
 
     #En lugar de mostrarla (que a veces falla en servidores), la guardamos
 
-    plt.savefig('reporte_stock.png')
+    plt.savefig('reporte_stock_colores.png')
     print("¡Gráfica guardada exitosamente como 'reporte_stock_colores.png'!")
 
+def guardar_inventario_limpio(df, nombre_archivo):
+    df_final = normalizar_datos(df)
+    df_final = validar_datos(df_final)
+    df_final.to_json(nombre_archivo, orient='records', indent=4)
+    print(f"Se exportó correctamente el archivo {nombre_archivo}")
+    clasificar_inventario(df_final)
+    graficar_stock(df_final)
 
+    #--- RESUMEN EJECUTIVO (KPIs) ---
+    total_productos = len(df_final)
+    valor_total = (df_final['precio'] * df_final['stock']).sum()
+    stock_total = df_final['stock'].sum()
 
-df = validar_datos(df)
+    print("RESUMEN DEL INVENTARIO")
+    print(f"Total de productos distintos: {total_productos}")
+    print(f"Total de productos en almacen: {stock_total}")
+    print(f"Valor total del patrimonio {valor_total:,.2f}")
 
-print(df)
+guardar_inventario_limpio(df, 'df_limpio.json')

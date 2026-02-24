@@ -1,0 +1,37 @@
+[
+    {
+        "nombre":"BUZZ LIGHTYEAR",
+        "precio":550.0,
+        "stock":20
+    },
+    {
+        "nombre":"EDUARDO",
+        "precio":200.0,
+        "stock":2
+    },
+    {
+        "nombre":"KARLA",
+        "precio":400.0,
+        "stock":2
+    },
+    {
+        "nombre":"MARCO",
+        "precio":300.0,
+        "stock":21
+    },
+    {
+        "nombre":"MAXILIANO",
+        "precio":300.0,
+        "stock":86
+    },
+    {
+        "nombre":"REX",
+        "precio":600.0,
+        "stock":24
+    },
+    {
+        "nombre":"WOODY",
+        "precio":1000.0,
+        "stock":40
+    }
+]
