@@ -133,6 +133,7 @@ def graficar_stock(df):
     plt.savefig('reporte_stock_colores.png')
     print("¡Gráfica guardada exitosamente como 'reporte_stock_colores.png'!")
 
+#Utilizamos varias de las funciones que usamos anteriormente para guardar un df limpio
 def guardar_inventario_limpio(df, nombre_archivo):
     df_final = normalizar_datos(df)
     df_final = validar_datos(df_final)
